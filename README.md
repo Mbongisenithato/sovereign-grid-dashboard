@@ -21,3 +21,4 @@ This project is configured for automated deployment via Vercel. Every push to th
 
 ## License
 This project is licensed under the **MIT License**. See the `LICENSE` file for details.
+// triggering redeploy
