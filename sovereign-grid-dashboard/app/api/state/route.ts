@@ -10,14 +10,13 @@ export async function GET() {
     const command = new GetCommand({
       TableName: "EventTelemetryTable",
       Key: { 
-        GateID: "GATE_A", // Ensure this exists in your table
+        GateID: "GATE_A", 
         Timestamp: "2026-06-13T11:31:00Z" 
       },
     });
 
     const response = await docClient.send(command);
     
-    // If Item exists, return it; otherwise return a helpful error
     if (response.Item) {
       return NextResponse.json(response.Item);
     } else {
