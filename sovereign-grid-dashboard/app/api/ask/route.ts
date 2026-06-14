@@ -1,16 +1,28 @@
-async function sendPromptToAgent(userPrompt: string) {
-  try {
-    const response = await fetch('/api/ask', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ prompt: userPrompt }),
-    });
+import { NextResponse } from 'next/server';
 
-    const data = await response.json();
-    console.log("Server response:", data);
+// This handles the status check for your API
+export async function GET() {
+  return NextResponse.json({ message: "API is active" });
+}
+
+// This handles the actual prompt dispatching
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { prompt } = body;
+    
+    // Add your agent/DynamoDB logic here
+    console.log("Agent received prompt:", prompt);
+
+    return NextResponse.json({ 
+      success: true, 
+      message: "Prompt processed", 
+      received: prompt 
+    });
   } catch (error) {
-    console.error("Error sending prompt:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to process prompt" }, 
+      { status: 500 }
+    );
   }
 }

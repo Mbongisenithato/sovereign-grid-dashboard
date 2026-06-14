@@ -1,10 +1,19 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 export async function GET() {
-  return NextResponse.json({ message: "Hello from Sovereign Grid API" });
+  // Replace this with your actual DynamoDB call
+  const state = { 
+    status: "OPERATIONAL", 
+    pending_action: null 
+  };
+  
+  return NextResponse.json(state);
 }
 
 export async function POST(request: Request) {
   const body = await request.json();
-  return NextResponse.json({ received: body });
+  return NextResponse.json({ 
+    message: "State update received", 
+    received: body 
+  });
 }
