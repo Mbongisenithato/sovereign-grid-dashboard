@@ -1,28 +1,29 @@
 import { NextResponse } from "next/server";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 const docClient = DynamoDBDocumentClient.from(client);
 
 export async function GET() {
   try {
-    const command = new GetCommand({
-      TableName: "EventTelemetryTable",
-      Key: { 
-        GateID: "GATE_A", 
-        Timestamp: "2026-06-13T11:31:00Z" 
-      },
-    });
-
+    // Scan retrieves everything in the table
+    const command = new ScanCommand({ TableName: "EventTelemetryTable" });
     const response = await docClient.send(command);
     
-    if (response.Item) {
-      return NextResponse.json(response.Item);
-    } else {
-      return NextResponse.json({ status: "NO_DATA_FOUND", message: "Table reachable, but no item matching that key." });
+    // Check if items exist
+    if (response.Items && response.Items.length > 0) {
+      return NextResponse.json(response.Items[0]); // Return the first item found
     }
+    
+    return NextResponse.json({ 
+      status: "NO_DATA_FOUND", 
+      message: "Table reachable, but no items found." 
+    });
   } catch (err) {
-    return NextResponse.json({ status: "ERROR", error: String(err) }, { status: 500 });
+    return NextResponse.json({ 
+      status: "ERROR", 
+      error: String(err) 
+    }, { status: 500 });
   }
 }
