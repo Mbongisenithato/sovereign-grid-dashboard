@@ -1,6 +1,16 @@
-import { NextResponse } from "next/server";
-export async function POST(req: Request) {
-  const { prompt } = await req.json();
-  console.log("Agent received prompt:", prompt);
-  return NextResponse.json({ success: true, message: "Agent processing..." });
+async function sendPromptToAgent(userPrompt: string) {
+  try {
+    const response = await fetch('/api/ask', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt: userPrompt }),
+    });
+
+    const data = await response.json();
+    console.log("Server response:", data);
+  } catch (error) {
+    console.error("Error sending prompt:", error);
+  }
 }
